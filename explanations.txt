@@ -1,0 +1,7 @@
+1.to show the random product:
+ Product.objects.all().order_by("?").first()
+
+2.The difference between the httpResponse and JsonResponse:
+JsonResponse accept dictionnary as a parameter but httpResponse accept string (text/html)
+to print is: print(get_response.text)
+print(get_response.json())
