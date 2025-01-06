@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-class IsStaffEditorPersmission(permissions.DjangoModelPermissions):
+class IsStaffEditorPermission(permissions.DjangoModelPermissions):
     # def has_permission(self, request, view):
     #     user=request.user
     #     print(user.get_all_permissions())

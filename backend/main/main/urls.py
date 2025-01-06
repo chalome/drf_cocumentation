@@ -23,4 +23,6 @@ urlpatterns = [
     path('api/',include('api.urls')),
     path('api/products/',include('product.urls')),
     path('api-auth/',include('rest_framework.urls')),
+    path('api/v2/',include('main.routers')),
+    path('api/search/',include('search.urls')),
 ]

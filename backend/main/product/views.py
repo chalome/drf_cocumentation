@@ -4,15 +4,16 @@ from .serializers import *
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
-from .permissions import IsStaffEditorPersmission
+from api.permissions import IsStaffEditorPermission
 from api.authentication import TokenAuthentication
+from api.mixins import *
 
 
 class ProductDetailView(generics.RetrieveAPIView):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
 
-class ProductCreateView(generics.CreateAPIView):
+class ProductCreateView( StaffEditorPermissionMixin,generics.CreateAPIView,UserQuerySetMixin):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
     
@@ -26,21 +27,40 @@ class ProductCreateView(generics.CreateAPIView):
             content=title
         serializer.save(content=content)
         
-class ProductListView(generics.ListAPIView):
+class ProductListView(generics.ListAPIView,UserQuerySetMixin):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
+    allow_staff_view=True
+    
 
 
-class ProductCreateListView(generics.ListCreateAPIView):
+class ProductCreateListView(UserQuerySetMixin,StaffEditorPermissionMixin,generics.ListCreateAPIView):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
     # authentication_classes=[authentication.SessionAuthentication,authentication.TokenAuthentication]
-    authentication_classes=[authentication.SessionAuthentication,TokenAuthentication]#custom Bearer token
+    # authentication_classes=[authentication.SessionAuthentication,TokenAuthentication]#custom Bearer token
     # permission_classes=[permissions.IsAuthenticatedOrReadOnly]
     # permission_classes=[permissions.DjangoModelPermissions]
-    # permission_classes=[IsStaffEditorPersmission]
-    permission_classes=[permissions.IsAdminUser, IsStaffEditorPersmission]
+    # permission_classes=[IsStaffEditorPermission]
+    # permission_classes=[permissions.IsAdminUser, IsStaffEditorPermission]
+    allow_staff_view=False
     
+    def perform_create(self, serializer):
+        email=serializer.validated_data.pop('email')
+        print(email)
+        title=serializer.validated_data.get('title')
+        content=serializer.validated_data.get('content') or None
+        if content is None:
+            content=title
+        serializer.save(user=self.request.user,content=content)
+        
+    # def get_queryset(self,*args, **kwargs):
+    #     qs=super().get_queryset(*args, **kwargs)
+    #     request=self.request
+    #     user=request.user
+    #     if not user.is_authenticated:
+    #         return Product.objects.none()
+    #     return qs.filter(user=request.user)
 
 class ProductUpdateView(generics.UpdateAPIView):
     queryset=Product.objects.all()

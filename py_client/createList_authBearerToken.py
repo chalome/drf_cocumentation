@@ -9,8 +9,8 @@ username=input("Enter username:\n")
 password=getpass("what is your password:\n")
 
 data={
-    "title":"bananas",
-    "content":"they are very ripen and natural and good for health",
+    "title":"green pea",
+    "content":"they are cereals sweet and natural and good for health",
     "price":600
 }
 

@@ -5,3 +5,5 @@
 JsonResponse accept dictionnary as a parameter but httpResponse accept string (text/html)
 to print is: print(get_response.text)
 print(get_response.json())
+
+3. I have challenge to repeat many time the search api
